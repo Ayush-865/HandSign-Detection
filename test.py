@@ -6,6 +6,9 @@ import math
 import time
 
 cap = cv2.VideoCapture(0)
+# cap.set(3, 2000)
+# cap.set(4, 600)
+# cap.set(10,100)
 detector = HandDetector(maxHands=2)
 classifier = Classifier("Model\keras_model.h5", "Model/labels.txt")
 offset = 20
@@ -59,16 +62,10 @@ while True:
                     imgWhite[hGap:hCal + hGap, :] = imgResize
                     prediction, index = classifier.getPrediction(imgWhite)
 
-                # Calculate the bounding box that contains both hands
-                x_combined = min(x1 - offset, x2 - offset)
-                y_combined = min(y1 - offset, y2 - offset)
-                w_combined = max(x1 + w1 + offset, x2 + w2 + offset) - x_combined
-                h_combined = max(y1 + h1 + offset, y2 + h2 + offset) - y_combined
-
                 # Draw the bounding box and display text
-                cv2.rectangle(imgOutput, (x_combined, y_combined - 50),
-                            (x_combined + w_combined, y_combined + h_combined), (255, 0, 255))
-                cv2.putText(imgOutput, labels[index], (x_combined, y_combined - 26),
+                cv2.rectangle(imgOutput, (x2 - offset, y2 - offset),
+                            (x1+w1+offset, y1+h1), (255, 0, 255) , 4)
+                cv2.putText(imgOutput, labels[index], (x2,y2+offset),
                             cv2.FONT_HERSHEY_COMPLEX, 1.7, (255, 255, 255), 2)
                 
             except BaseException as e:
@@ -103,11 +100,12 @@ while True:
                     imgWhite[hGap:hCal + hGap, :] = imgResize
                     prediction, index = classifier.getPrediction(imgWhite)
                 
-                cv2.rectangle(imgOutput, (x1 - offset, y1 - offset-50),
-                      (x1 - offset+90, y1 - offset-50+50), (255, 0, 255), cv2.FILLED)
-                cv2.putText(imgOutput, labels[index], (x1, y1 -26), cv2.FONT_HERSHEY_COMPLEX, 1.7, (255, 255, 255), 2)
-                cv2.rectangle(imgOutput, (x1-offset, y1-offset),
-                      (x1 + w1+offset, y1 + h1+offset), (255, 0, 255), 4)
+                # cv2.rectangle(imgOutput, (x1 - offset, y1 - offset-50),
+                #       (x1 - offset+90, y1 - offset-50+50), (255, 0, 255), cv2.FILLED)
+                # cv2.putText(imgOutput, labels[index], (x1, y1 -26), cv2.FONT_HERSHEY_COMPLEX, 1.7, (255, 255, 255), 2)
+                # cv2.rectangle(imgOutput, (x1-offset, y1-offset),
+                #       (x1 + w1+offset, y1 + h1+offset), (255, 0, 255), 4)
+                
             except BaseException as e:
                 print(f"Error resizing image: {e}")
 
